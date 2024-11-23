@@ -1,5 +1,8 @@
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
 
 const persons = [
     { id: "1", name: "Arto Hellas", number: "040-123456" },
@@ -45,6 +48,26 @@ app.delete('/api/persons/:id', (request, response) => {
     } else {
       return response.status(404).json({ error: 'Person not found' });
     }
+});
+
+app.post('/api/persons', (req, res) => {
+    const { name, number } = req.body;
+
+    if (!name || !number) {
+        return res.status(400).json({ error: 'Name and number are required' });
+    }
+
+    const id = Math.random().toString(36).substr(2, 9); 
+
+    const newPerson = {
+        id,
+        name,
+        number
+    };
+
+    persons.push(newPerson);
+
+    res.status(201).json(newPerson);
 });
 
 const PORT = 3001;
