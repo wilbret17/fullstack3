@@ -51,18 +51,22 @@ app.delete('/api/persons/:id', (request, response) => {
 });
 
 app.post('/api/persons', (req, res) => {
-    const { name, number } = req.body;
+    const body = req.body;
 
-    if (!name || !number) {
+    if (!body.name || !body.number) {
         return res.status(400).json({ error: 'Name and number are required' });
     }
 
-    const id = Math.random().toString(36).substr(2, 9); 
+    const existingPerson = persons.find(p => p.name === body.name);
+
+    if (existingPerson) {
+        return res.status(400).json({ error: 'Name must be unique' });
+    } 
 
     const newPerson = {
-        id,
-        name,
-        number
+        id: Math.random().toString(36).substr(2, 9),
+        name: body.name,
+        number: body.number
     };
 
     persons.push(newPerson);
