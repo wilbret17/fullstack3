@@ -2,13 +2,17 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const path = require('path');
+const cors = require('cors');
+
+app.use(cors());
 
 morgan.token('post-data', (req) => {
     return req.method === 'POST' ? JSON.stringify(req.body) : '';
-
 });
 
 app.use(morgan('method :url :status :res[content-length] - :response-time ms :post-data'));
+
 app.use(bodyParser.json());
 
 const persons = [
@@ -19,6 +23,7 @@ const persons = [
 ];
 
 app.get('/api/persons', (req, res) => {
+    console.log(persons);
     res.json(persons);
 });
 
@@ -32,54 +37,65 @@ app.get('/info', (req, res) => {
     `);
 });
 
-
-app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
+app.get('/api/persons/:id', (req, res) => {
+    const id = req.params.id;
     const person = persons.find(p => p.id === id);
     
-  
     if (person) {
-      response.json(person);
+        res.json(person);
     } else {
-      response.status(404).send({error: 'Person not found'});
+        res.status(404).send({ error: 'Person not found' });
     }
 });
 
-app.delete('/api/persons/:id', (request, response) => {
-    const id = request.params.id
+app.delete('/api/persons/:id', (req, res) => {
+    const id = req.params.id;
     const personIndex = persons.findIndex(p => p.id === id);
-  
+
     if (personIndex !== -1) {
         persons.splice(personIndex, 1);
-        response.status(204).end();
+        res.status(204).end();
     } else {
-      return response.status(404).json({ error: 'Person not found' });
+        return res.status(404).json({ error: 'Person not found' });
     }
 });
 
 app.post('/api/persons', (req, res) => {
     const body = req.body;
 
+   
     if (!body.name || !body.number) {
         return res.status(400).json({ error: 'Name and number are required' });
     }
 
+    
     const existingPerson = persons.find(p => p.name === body.name);
-
     if (existingPerson) {
         return res.status(400).json({ error: 'Name must be unique' });
-    } 
+    }
 
+    
     const newPerson = {
         id: Math.random().toString(36).substr(2, 9),
         name: body.name,
         number: body.number
     };
 
+    
     persons.push(newPerson);
 
+    
     res.status(201).json(newPerson);
 });
+
+
+app.use(express.static(path.join(__dirname, 'dist')));
+
+
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+});
+
 
 const PORT = 3001;
 app.listen(PORT, () => {
