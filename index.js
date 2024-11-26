@@ -1,19 +1,21 @@
 const express = require('express');
 const app = express();
-const bodyParser = require('body-parser');
-const morgan = require('morgan');
 const path = require('path');
 const cors = require('cors');
+const morgan = require('morgan');
 
-app.use(cors());
 
 morgan.token('post-data', (req) => {
     return req.method === 'POST' ? JSON.stringify(req.body) : '';
 });
-
 app.use(morgan('method :url :status :res[content-length] - :response-time ms :post-data'));
 
-app.use(bodyParser.json());
+
+app.use(express.json());
+
+
+app.use(cors());
+
 
 const persons = [
     { id: "1", name: "Arto Hellas", number: "040-123456" },
@@ -22,20 +24,22 @@ const persons = [
     { id: "4", name: "Mary Poppendieck", number: "39-23-6423122" },
 ];
 
+
 app.get('/api/persons', (req, res) => {
     console.log(persons);
     res.json(persons);
 });
 
+
 app.get('/info', (req, res) => {
     const currentTime = new Date();
     const totalEntries = persons.length;
-
     res.send(`
         <p>Phonebook has info for ${totalEntries} people</p>
         <p>${currentTime}</p>
     `);
 });
+
 
 app.get('/api/persons/:id', (req, res) => {
     const id = req.params.id;
@@ -47,6 +51,7 @@ app.get('/api/persons/:id', (req, res) => {
         res.status(404).send({ error: 'Person not found' });
     }
 });
+
 
 app.delete('/api/persons/:id', (req, res) => {
     const id = req.params.id;
@@ -60,10 +65,11 @@ app.delete('/api/persons/:id', (req, res) => {
     }
 });
 
+
 app.post('/api/persons', (req, res) => {
     const body = req.body;
 
-   
+    
     if (!body.name || !body.number) {
         return res.status(400).json({ error: 'Name and number are required' });
     }
@@ -81,7 +87,6 @@ app.post('/api/persons', (req, res) => {
         number: body.number
     };
 
-    
     persons.push(newPerson);
 
     
@@ -97,7 +102,7 @@ app.get('*', (req, res) => {
 });
 
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
