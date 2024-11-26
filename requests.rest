@@ -1,7 +1,5 @@
-POST https://fullstack3-gahg.onrender.com/
-Content-Type: application/json
-
+POST https://fullstack3-1.onrender.com/api/persons
 {
   "name": "John Doe",
-  "email": "john@example.com"
+  "number": "111"
 }
