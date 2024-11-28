@@ -21,6 +21,11 @@ const number = args[4];
 
 const url = process.env.MONGODB_URI;
 
+if (!url) {
+  console.error('MongoDB URI is not defined in the environment variables.');
+  process.exit(1);
+}
+
 console.log("MongoDB URI:", url); 
 
 mongoose.set('strictQuery', false);
