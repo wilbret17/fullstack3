@@ -19,7 +19,9 @@ const password = args[2];
 const name = args[3];
 const number = args[4];
 
-const url = process.env.MONGODB_URI; 
+const url = process.env.MONGODB_URI;
+
+console.log("MongoDB URI:", url); 
 
 mongoose.set('strictQuery', false);
 mongoose.connect(url)
