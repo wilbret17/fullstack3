@@ -3,7 +3,7 @@ require('dotenv').config();
 
 mongoose.set('strictQuery', false);
 
-const url = process.env.MONGO_URI;
+const url = process.env.MONGODB_URI;
 
 if (!url) {
   console.error('Error: MONGODB_URI is not defined in the .env file');

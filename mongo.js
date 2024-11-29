@@ -19,7 +19,7 @@ const password = args[2];
 const name = args[3];
 const number = args[4];
 
-const url = process.env.MONGO_URI;
+const url = process.env.MONGODB_URI;
 
 if (!url) {
   console.error('MongoDB URI is not defined in the environment variables.');
