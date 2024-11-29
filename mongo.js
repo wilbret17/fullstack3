@@ -33,7 +33,6 @@ mongoose.set('strictQuery', false);
 mongoose.connect(url)
   .then(() => {
     console.log('Connected to MongoDB');
-
     if (args.length === 3) {
       Person.find({})
         .then((result) => {

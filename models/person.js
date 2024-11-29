@@ -12,10 +12,7 @@ if (!url) {
 
 console.log('Connecting to MongoDB...');
 
-mongoose.connect(url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(url)
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => {
     console.error('Error connecting to MongoDB:', error.message);
