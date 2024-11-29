@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-require('dotenv').config(); 
+require('dotenv').config();  
 
 const personSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -33,24 +33,27 @@ mongoose.set('strictQuery', false);
 mongoose.connect(url)
   .then(() => {
     console.log('Connected to MongoDB');
+    
     if (args.length === 3) {
       Person.find({})
         .then((result) => {
-          console.log('phonebook:');
+          console.log('Phonebook:');
           result.forEach((person) => console.log(`${person.name} ${person.number}`));
-          mongoose.connection.close(); 
+          mongoose.connection.close();
         })
         .catch((err) => {
           console.error('Error fetching data:', err);
           mongoose.connection.close();
         });
-    } else if (args.length === 5) {
+    }
+
+    else if (args.length === 5) {
       const person = new Person({ name, number });
 
       person.save()
         .then(() => {
           console.log(`Added ${name} number ${number} to phonebook`);
-          mongoose.connection.close(); 
+          mongoose.connection.close();
         })
         .catch((err) => {
           console.error('Error saving person:', err);
