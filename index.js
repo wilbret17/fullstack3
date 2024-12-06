@@ -10,9 +10,11 @@ const app = express();
 
 
 app.use(express.json());
-app.use(cors());
+const allowedOrigins = ['http://localhost:3000', 'https://full-stack-open-rbms.onrender.com'];
 
-
+app.use(cors({
+  origin: allowedOrigins
+}));
 
 morgan.token('post-data', (req) => {
     return req.method === 'POST' ? JSON.stringify(req.body) : '';
