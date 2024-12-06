@@ -85,9 +85,13 @@ app.post('/api/persons', (req, res) => {
         const person = new Person({ name, number });
         person.save()
             .then((savedPerson) => res.status(201).json(savedPerson))
-            .catch((err) => res.status(500).send({ error: 'Failed to save person' }));
+            .catch((err) => {
+                console.error('Error saving person:', err); 
+                res.status(500).send({ error: 'Failed to save person' });
+            }); 
     });
 });
+
 
 
 app.use(express.static(path.join(__dirname, 'dist')));
