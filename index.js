@@ -100,6 +100,9 @@ app.post('/api/persons', (req, res) => {
         person.save()
             .then((savedPerson) => res.status(201).json(savedPerson))
             .catch((err) => {
+                if (err.name === 'ValidationError') {
+                    return res.status(400).json({ error: err.message });
+                }
                 console.error('Error saving person:', err); 
                 res.status(500).send({ error: 'Failed to save person' });
             }); 
