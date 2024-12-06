@@ -101,7 +101,7 @@ app.post('/api/persons', (req, res) => {
             .then((savedPerson) => res.status(201).json(savedPerson))
             .catch((err) => {
                 if (err.name === 'ValidationError') {
-                    return res.status(400).json({ error: err.message });
+                    return res.status(400).json({ error: 'Name must be at least 3 characters long' });
                 }
                 console.error('Error saving person:', err); 
                 res.status(500).send({ error: 'Failed to save person' });
