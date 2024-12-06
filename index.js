@@ -45,7 +45,7 @@ app.get('/info', (req, res) => {
 });
 
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     Person.findById(req.params.id)
         .then((person) => {
             if (person) {
@@ -54,11 +54,11 @@ app.get('/api/persons/:id', (req, res) => {
                 res.status(404).send({ error: 'Person not found' });
             }
         })
-        .catch((err) => res.status(400).send({ error: 'Invalid ID format' }));
+        .catch((err) => next(err));
 });
 
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndDelete(req.params.id)
         .then((result) => {
             if (result) {
@@ -67,9 +67,23 @@ app.delete('/api/persons/:id', (req, res) => {
                 res.status(404).send({ error: 'Person not found' });
             }
         })
-        .catch((err) => res.status(400).send({ error: 'Invalid ID format' }));
+        .catch((error) => next(error));
 });
 
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message);  
+  
+    if (error.name === 'CastError') {
+      return response.status(400).send({ error: 'malformatted id' });
+    } else if (error.name === 'ValidationError') {
+      return response.status(400).send({ error: 'validation error' });
+    }
+  
+    next(error);
+  };
+  
+app.use(errorHandler);
+  
 app.post('/api/persons', (req, res) => {
     const { name, number } = req.body;
 
@@ -92,13 +106,10 @@ app.post('/api/persons', (req, res) => {
     });
 });
 
-
-
 app.use(express.static(path.join(__dirname, 'dist')));
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
 });
-
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
