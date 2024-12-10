@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-require('dotenv').config(); 
+require('dotenv').config();
 
 mongoose.set('strictQuery', false);
 
@@ -29,7 +29,7 @@ const personSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Number is required'],
     validate: {
-      validator: (value) => /^\d{2,3}-\d{5,}$/.test(value), 
+      validator: (value) => /^\d{2,3}-\d{5,}$/.test(value),
       message: 'Number must be in the format XX-XXXXX or XXX-XXXXX',
     },
   },
